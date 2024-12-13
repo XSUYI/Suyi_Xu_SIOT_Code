@@ -3,42 +3,32 @@
 #include <ArduinoIoTCloud.h>
 #include <Arduino_ConnectionHandler.h>
 
-const char DEVICE_LOGIN_NAME[]  = "01d4c084-75c9-4681-ba0c-a10961c2f7c4";
+const char DEVICE_LOGIN_NAME[]  = "a2206d36-0388-408f-9547-baa2f6fc85f2";
 
 const char SSID[]               = SECRET_SSID;    // Network SSID (name)
 const char PASS[]               = SECRET_OPTIONAL_PASS;    // Network password (use for WPA, or use as key for WEP)
 const char DEVICE_KEY[]  = SECRET_DEVICE_KEY;    // Secret device password
 
-void onTeaTypeChange();
-void onAmbientTemperatureChange();
-void onOptimalTemperatureChange();
-void onWaterTemperatureChange();
-void onCoolingTimeChange();
-void onWaterReadyChange();
-void onReadyTimeChange();
-void onStartTimeChange();
+void onHumiWarningChange();
+void onTempWarningChange();
 
-String teaType;
-float ambient_temperature;
-float optimal_temperature;
-float water_temperature;
-int cooling_time;
-bool waterReady;
-CloudTime ready_time;
-CloudTime start_time;
+float celTemp;
+float relHumid;
+bool humiWarning;
+bool storageHumiStatus;
+bool storageTempStatus;
+bool tempWarning;
 
 void initProperties(){
 
   ArduinoCloud.setBoardId(DEVICE_LOGIN_NAME);
   ArduinoCloud.setSecretDeviceKey(DEVICE_KEY);
-  ArduinoCloud.addProperty(teaType, READWRITE, ON_CHANGE, onTeaTypeChange);
-  ArduinoCloud.addProperty(ambient_temperature, READWRITE, 10 * SECONDS, onAmbientTemperatureChange);
-  ArduinoCloud.addProperty(optimal_temperature, READWRITE, ON_CHANGE, onOptimalTemperatureChange);
-  ArduinoCloud.addProperty(water_temperature, READWRITE, 5 * SECONDS, onWaterTemperatureChange);
-  ArduinoCloud.addProperty(cooling_time, READWRITE, 5 * SECONDS, onCoolingTimeChange);
-  ArduinoCloud.addProperty(waterReady, READWRITE, ON_CHANGE, onWaterReadyChange);
-  ArduinoCloud.addProperty(ready_time, READWRITE, ON_CHANGE, onReadyTimeChange);
-  ArduinoCloud.addProperty(start_time, READWRITE, ON_CHANGE, onStartTimeChange);
+  ArduinoCloud.addProperty(celTemp, READ, 5 * SECONDS, NULL);
+  ArduinoCloud.addProperty(relHumid, READ, 5 * SECONDS, NULL);
+  ArduinoCloud.addProperty(humiWarning, READWRITE, ON_CHANGE, onHumiWarningChange);
+  ArduinoCloud.addProperty(storageHumiStatus, READ, ON_CHANGE, NULL);
+  ArduinoCloud.addProperty(storageTempStatus, READ, ON_CHANGE, NULL);
+  ArduinoCloud.addProperty(tempWarning, READWRITE, ON_CHANGE, onTempWarningChange);
 
 }
 
